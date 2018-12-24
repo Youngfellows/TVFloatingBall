@@ -2,11 +2,13 @@ package com.speex.floating.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.speex.floating.R;
 import com.speex.floating.manager.FloatWindowManager;
+import com.speex.floating.view.FloatWindowView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     FloatWindowManager.getInstance().showFloatWindow();
+                    FloatWindowManager.getInstance().setOnClickListener(new FloatWindowView.OnClickListener() {
+                        @Override
+                        public void onClick() {
+                            Log.d(TAG, "onClick: 点击了");
+                        }
+                    });
                     finish();
                 } else {
                     FloatWindowManager.getInstance().removeFloatWindow();

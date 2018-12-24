@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -14,7 +15,7 @@ import com.speex.floating.view.FloatMenuView;
 import com.speex.floating.view.FloatWindowView;
 
 public class FloatWindowManager {
-
+    private String TAG = this.getClass().getSimpleName();
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mFloatWindowLayoutParams;
     private WindowManager.LayoutParams mMenuLayoutParams;
@@ -143,6 +144,13 @@ public class FloatWindowManager {
      */
     public boolean isWindowShowing() {
         return mFloatWindow != null;
+    }
+
+    public void setOnClickListener(FloatWindowView.OnClickListener onClickListener) {
+        Log.i(TAG, "setOnClickListener mFloatWindow = " + mFloatWindow);
+        if (mFloatWindow != null) {
+            mFloatWindow.setOnClickListener(onClickListener);
+        }
     }
 
 }

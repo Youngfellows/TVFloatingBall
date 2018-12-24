@@ -80,8 +80,8 @@ public class FloatWindowView extends FrameLayout {
                 case MotionEvent.ACTION_UP:
                     Log.e(TAG, "ACTION_UP 松开啦");
                     if (xDownInScreen == xInScreen && yDownInScreen == yInScreen) { //如果抬起点和按下点一致，则视为点击
-                        FloatWindowManager.getInstance().removeFloatWindow();
-                        FloatWindowManager.getInstance().showMenu();
+//                        FloatWindowManager.getInstance().removeFloatWindow();
+//                        FloatWindowManager.getInstance().showMenu();
 
                         // TODO: 2018/12/25 点击了
                         Log.i(TAG, "点击了按钮 , mOnClickListener = " + mOnClickListener);
