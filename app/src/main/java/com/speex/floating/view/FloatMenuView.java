@@ -11,17 +11,12 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.speex.floating.R;
-import com.speex.floating.app.App;
 import com.speex.floating.bean.Size;
 import com.speex.floating.manager.FloatWindowManager;
 
 public class FloatMenuView extends FrameLayout {
-
     private TextView textView;
-
-    public FloatMenuView() {
-        this(App.mContext);
-    }
+    private FloatWindowView.OnTouchEventListener mOnTouchEventListener;
 
     public FloatMenuView(Context context) {
         this(context, null);
@@ -36,7 +31,6 @@ public class FloatMenuView extends FrameLayout {
 
         initView(context);
         setListener();
-
     }
 
     private void initView(Context context) {
@@ -52,6 +46,7 @@ public class FloatMenuView extends FrameLayout {
             public void onClick(View v) {
                 FloatWindowManager.getInstance().removeMenu();
                 FloatWindowManager.getInstance().showFloatWindow();
+                FloatWindowManager.getInstance().setTouchEventListener(mOnTouchEventListener);
             }
         });
     }
@@ -89,4 +84,7 @@ public class FloatMenuView extends FrameLayout {
         valueAnimator.setDuration(5000).start();
     }
 
+    public void setTouchEventListener(FloatWindowView.OnTouchEventListener onTouchEventListener) {
+        this.mOnTouchEventListener = onTouchEventListener;
+    }
 }

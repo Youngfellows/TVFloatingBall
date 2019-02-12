@@ -9,13 +9,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.speex.floating.R;
-import com.speex.floating.app.App;
 import com.speex.floating.manager.FloatWindowManager;
 import com.speex.floating.utils.ScreenUtils;
 
 
 public class FloatWindowView extends FrameLayout {
     private String TAG = this.getClass().getSimpleName();
+    private Context mContext;
     private FrameLayout floatWindow;
     private float xInView;
     private float yInView;
@@ -26,13 +26,9 @@ public class FloatWindowView extends FrameLayout {
     private float xDownInScreen;
     private float yDownInScreen;
 
-
-    public FloatWindowView() {
-        this(App.mContext);
-    }
-
     public FloatWindowView(Context context) {
         this(context, null);
+        mContext = context;
     }
 
     public FloatWindowView(Context context, AttributeSet attrs) {
@@ -44,7 +40,6 @@ public class FloatWindowView extends FrameLayout {
 
         initView(context);
         setListener();
-
     }
 
     private void initView(Context context) {
@@ -71,6 +66,9 @@ public class FloatWindowView extends FrameLayout {
                     xInScreen = event.getRawX();
                     yInScreen = event.getRawY() - FloatWindowManager.getInstance().getStatusBarHeight();
                     Log.e(TAG, "ACTION_DOWN 按下啦");
+                    if (mOnTouchEventListener != null) {
+                        mOnTouchEventListener.onDown();
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     xInScreen = event.getRawX();
@@ -79,21 +77,23 @@ public class FloatWindowView extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_UP:
                     Log.e(TAG, "ACTION_UP 松开啦");
+                    if (mOnTouchEventListener != null) {
+                        mOnTouchEventListener.onUp();
+                    }
                     if (xDownInScreen == xInScreen && yDownInScreen == yInScreen) { //如果抬起点和按下点一致，则视为点击
 //                        FloatWindowManager.getInstance().removeFloatWindow();
 //                        FloatWindowManager.getInstance().showMenu();
-
                         // TODO: 2018/12/25 点击了
-                        Log.i(TAG, "点击了按钮 , mOnClickListener = " + mOnClickListener);
-                        if (mOnClickListener != null) {
-                            mOnClickListener.onClick();
+                        Log.i(TAG, "点击了按钮 , mOnTouchEventListener = " + mOnTouchEventListener);
+                        if (mOnTouchEventListener != null) {
+                            mOnTouchEventListener.onClick();
                         }
                         break;
                     }
 
                     //计算图标与屏幕距离，判断应停靠在哪一边
-                    float xRatio = xInScreen / ScreenUtils.getWindowWidthPx();
-                    float yRatio = yInScreen / ScreenUtils.getWindowHeightPx();
+                    float xRatio = xInScreen / ScreenUtils.getWindowWidthPx(mContext);
+                    float yRatio = yInScreen / ScreenUtils.getWindowHeightPx(mContext);
 
                     if (xRatio < 0.5 && yRatio < 0.5) { //第一象限
                         if (xRatio < yRatio) { //停靠屏幕左边
@@ -103,21 +103,21 @@ public class FloatWindowView extends FrameLayout {
                         }
                     } else if (xRatio > 0.5 && yRatio < 0.5) { //第二象限
                         if (xRatio > 1 - yRatio) { //停靠屏幕右边
-                            FloatWindowManager.getInstance().animateMove((ScreenUtils.getWindowWidthPx() - getWidth()), (int) (yInScreen - yInView));
+                            FloatWindowManager.getInstance().animateMove((ScreenUtils.getWindowWidthPx(mContext) - getWidth()), (int) (yInScreen - yInView));
                         } else { //停靠屏幕上边
                             FloatWindowManager.getInstance().animateMove((int) (xInScreen - xInView), 0);
                         }
                     } else if (xRatio > 0.5 && yRatio > 0.5) { //第三象限
                         if (xRatio > yRatio) { //停靠屏幕右边
-                            FloatWindowManager.getInstance().animateMove((ScreenUtils.getWindowWidthPx() - getWidth()), (int) (yInScreen - yInView));
+                            FloatWindowManager.getInstance().animateMove((ScreenUtils.getWindowWidthPx(mContext) - getWidth()), (int) (yInScreen - yInView));
                         } else { //停靠屏幕下边
-                            FloatWindowManager.getInstance().animateMove((int) (xInScreen - xInView), ScreenUtils.getWindowHeightPx() - getHeight());
+                            FloatWindowManager.getInstance().animateMove((int) (xInScreen - xInView), ScreenUtils.getWindowHeightPx(mContext) - getHeight());
                         }
                     } else { //第四象限
                         if (1 - xRatio > yRatio) { //停靠屏幕左边
                             FloatWindowManager.getInstance().animateMove(0, (int) (yInScreen - yInView));
                         } else { //停靠屏幕下边
-                            FloatWindowManager.getInstance().animateMove((int) (xInScreen - xInView), ScreenUtils.getWindowHeightPx() - getHeight());
+                            FloatWindowManager.getInstance().animateMove((int) (xInScreen - xInView), ScreenUtils.getWindowHeightPx(mContext) - getHeight());
                         }
                     }
 
@@ -128,13 +128,17 @@ public class FloatWindowView extends FrameLayout {
         }
     }
 
-    private OnClickListener mOnClickListener;
+    private OnTouchEventListener mOnTouchEventListener;
 
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.mOnClickListener = onClickListener;
+    public void setOnTouchEventListener(OnTouchEventListener onTouchEventListener) {
+        this.mOnTouchEventListener = onTouchEventListener;
     }
 
-    public interface OnClickListener {
+    public interface OnTouchEventListener {
+        void onDown();
+
         void onClick();
+
+        void onUp();
     }
 }

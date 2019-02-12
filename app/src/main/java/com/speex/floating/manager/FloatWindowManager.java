@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
-import com.speex.floating.app.App;
 import com.speex.floating.bean.Point;
 import com.speex.floating.view.FloatMenuView;
 import com.speex.floating.view.FloatWindowView;
@@ -22,22 +21,34 @@ public class FloatWindowManager {
 
     private FloatWindowView mFloatWindow;
     private FloatMenuView mMenu;
+    private Context mContext;
+    private FloatWindowView.OnTouchEventListener mOnTouchEventListener;
 
     public static FloatWindowManager getInstance() {
         return FloatWindowManagerHolder.instance;
     }
 
     private FloatWindowManager() {
+
     }
 
     private static class FloatWindowManagerHolder {
         private static final FloatWindowManager instance = new FloatWindowManager();
     }
 
+    /**
+     * 初始化上下文
+     *
+     * @param context
+     */
+    public void init(Context context) {
+        this.mContext = context;
+    }
+
     public void showFloatWindow() {
 
         if (mFloatWindow == null) {
-            mFloatWindow = new FloatWindowView();
+            mFloatWindow = new FloatWindowView(mContext);
         }
 
         if (mFloatWindowLayoutParams == null) {
@@ -48,14 +59,16 @@ public class FloatWindowManager {
     }
 
     public void removeFloatWindow() {
-        getWindowManager().removeView(mFloatWindow);
-        mFloatWindow = null;
+        if (mFloatWindow != null) {
+            getWindowManager().removeView(mFloatWindow);
+            mFloatWindow = null;
+        }
     }
 
     public void showMenu() {
 
         if (mMenu == null) {
-            mMenu = new FloatMenuView();
+            mMenu = new FloatMenuView(mContext);
         }
 
         if (mMenuLayoutParams == null) {
@@ -64,16 +77,22 @@ public class FloatWindowManager {
         }
         getWindowManager().addView(mMenu, mMenuLayoutParams);
 
+        //注册监听回调
+        if (mMenu != null) {
+            mMenu.setTouchEventListener(mOnTouchEventListener);
+        }
     }
 
     public void removeMenu() {
-        getWindowManager().removeView(mMenu);
-        mMenu = null;
+        if (mMenu != null) {
+            getWindowManager().removeView(mMenu);
+            mMenu = null;
+        }
     }
 
     private WindowManager getWindowManager() {
         if (mWindowManager == null) {
-            mWindowManager = (WindowManager) App.mContext.getSystemService(Context.WINDOW_SERVICE);
+            mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         }
         return mWindowManager;
     }
@@ -104,7 +123,7 @@ public class FloatWindowManager {
 
     public int getStatusBarHeight() {
         int height = 0;
-        Resources resources = App.mContext.getResources();
+        Resources resources = mContext.getResources();
         int resId = resources.getIdentifier("status_bar_height", "dimen", "android");
         if (resId > 0) {
             height = resources.getDimensionPixelSize(resId);
@@ -146,10 +165,11 @@ public class FloatWindowManager {
         return mFloatWindow != null;
     }
 
-    public void setOnClickListener(FloatWindowView.OnClickListener onClickListener) {
-        Log.i(TAG, "setOnClickListener mFloatWindow = " + mFloatWindow);
+    public void setTouchEventListener(FloatWindowView.OnTouchEventListener onTouchEventListener) {
+        Log.i(TAG, "setOnTouchEventListener mFloatWindow = " + mFloatWindow);
+        this.mOnTouchEventListener = onTouchEventListener;
         if (mFloatWindow != null) {
-            mFloatWindow.setOnClickListener(onClickListener);
+            mFloatWindow.setOnTouchEventListener(onTouchEventListener);
         }
     }
 

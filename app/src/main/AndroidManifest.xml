@@ -20,9 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name=".service.FloatWindowService">
-        </service>
 
+        <receiver android:name=".receiver.FloatWindowReceiver">
+            <intent-filter>
+                <action android:name="com.speex.ACTION_FLOAT_WINDOW_SHOW"/>
+                <action android:name="com.speex.ACTION_FLOAT_WINDOW_HIDE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

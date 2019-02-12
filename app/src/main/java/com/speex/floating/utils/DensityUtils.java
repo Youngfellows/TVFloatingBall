@@ -1,7 +1,7 @@
 package com.speex.floating.utils;
 
 
-import com.speex.floating.app.App;
+import android.content.Context;
 
 public class DensityUtils {
     /**
@@ -10,13 +10,13 @@ public class DensityUtils {
      * @param dp 要转换的dp值
      * @return 转换后的px值
      */
-    public static int dpToPx(float dp) {
-        final float scale = App.mContext.getResources().getDisplayMetrics().density;
+    public static int dpToPx(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
-    public static int PxToDp(float px) {
-        final float scale = App.mContext.getResources().getDisplayMetrics().density;
+    public static int PxToDp(Context context, float px) {
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (px / scale + 0.5f);
     }
 }

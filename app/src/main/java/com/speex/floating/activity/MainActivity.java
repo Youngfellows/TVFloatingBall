@@ -30,11 +30,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    FloatWindowManager.getInstance().init(MainActivity.this);
                     FloatWindowManager.getInstance().showFloatWindow();
-                    FloatWindowManager.getInstance().setOnClickListener(new FloatWindowView.OnClickListener() {
+                    FloatWindowManager.getInstance().setTouchEventListener(new FloatWindowView.OnTouchEventListener() {
+                        @Override
+                        public void onDown() {
+                            Log.d(TAG, "onDown: 按下了");
+                        }
+
                         @Override
                         public void onClick() {
                             Log.d(TAG, "onClick: 点击了");
+                            FloatWindowManager.getInstance().removeFloatWindow();
+                            FloatWindowManager.getInstance().showMenu();
+                        }
+
+                        @Override
+                        public void onUp() {
+                            Log.d(TAG, "onUp: 松开了");
                         }
                     });
                     finish();

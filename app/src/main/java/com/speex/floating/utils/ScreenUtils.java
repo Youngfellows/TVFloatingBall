@@ -4,35 +4,33 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.speex.floating.app.App;
-
 
 /**
  * 获取屏幕宽高
  */
 public class ScreenUtils {
 
-    public static int getWindowWidthPx() {
+    public static int getWindowWidthPx(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) App.mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
     }
 
-    public static int getWindowHeightPx() {
+    public static int getWindowHeightPx(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) App.mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
-    public static int getWindowWidthDp() {
+    public static int getWindowWidthDp(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) App.mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-        return DensityUtils.PxToDp(displayMetrics.widthPixels);
+        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+        return DensityUtils.PxToDp(context, displayMetrics.widthPixels);
     }
 
-    public static int getWindowHeightDp() {
+    public static int getWindowHeightDp(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) App.mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-        return DensityUtils.PxToDp(displayMetrics.heightPixels);
+        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+        return DensityUtils.PxToDp(context, displayMetrics.heightPixels);
     }
 }
